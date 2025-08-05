@@ -5,19 +5,21 @@ type Props = { params: { slug: string } };
 
 export async function generateStaticParams() {
   const artigos = await getArtigos();
-  return artigos.map((artigo) => ({ slug: artigo.slug }));
+  return artigos.map((artigo) => ({
+    slug: artigo.slug,
+  }));
 }
 
-export async function generateMetadata({ params: { slug } }: Props): Promise<Metadata> {
-  const artigo = await getArtigoBySlug(slug);
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const artigo = await getArtigoBySlug(params.slug);
   return {
     title: artigo?.titulo || "Artigo",
     description: artigo?.conteudo.slice(0, 150) || "Conteúdo do artigo",
   };
 }
 
-export default async function ArtigoPage({ params: { slug } }: Props) {
-  const artigo = await getArtigoBySlug(slug);
+export default async function ArtigoPage({ params }: { params: { slug: string } }) {
+  const artigo = await getArtigoBySlug(params.slug);
 
   if (!artigo) return <p>Artigo não encontrado.</p>;
 
